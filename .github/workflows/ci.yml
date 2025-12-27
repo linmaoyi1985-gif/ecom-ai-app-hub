@@ -24,9 +24,13 @@ jobs:
               npm install
             fi
           else
-            echo "No package.json yet; skipping install/build."
-            exit 0
+            echo "No package.json yet; skipping install."
           fi
 
-      - name: Build (if present)
-        run: npm run build --if-present
+      - name: Build (if package.json exists)
+        run: |
+          if [ -f package.json ]; then
+            npm run build --if-present
+          else
+            echo "No package.json yet; skipping build."
+          fi
