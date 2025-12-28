@@ -2,9 +2,11 @@ import { getAppBySlug } from "@/lib/registry";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import AsinKeywordsApp from "@/apps/asin-keywords/App";
+import BrandModelsApp from "@/apps/brand-models/App";
 
 const appComponents: Record<string, React.ComponentType> = {
   "asin-keywords": AsinKeywordsApp,
+  "brand-models": BrandModelsApp,
 };
 
 export default async function AppPage({

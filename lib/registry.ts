@@ -12,6 +12,12 @@ export const allApps: AppInfo[] = [
     category: "亚马逊工具",
     description: "输入ASIN获取关键词分析",
   },
+  {
+    slug: "brand-models",
+    title: "品牌主机型号查询",
+    category: "产品分析工具",
+    description: "根据空气净化器品牌查询滤芯及主机型号适配关系",
+  },
 ];
 
 export function getAppBySlug(slug: string): AppInfo | undefined {
