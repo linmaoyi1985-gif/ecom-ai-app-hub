@@ -2,10 +2,12 @@ import { getAppBySlug } from "@/lib/registry";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import AsinKeywordsApp from "@/apps/asin-keywords/App";
+import AsinCopywriterApp from "@/apps/asin-copywriter/App";
 import BrandModelsApp from "@/apps/brand-models/App";
 
 const appComponents: Record<string, React.ComponentType> = {
   "asin-keywords": AsinKeywordsApp,
+  "asin-copywriter": AsinCopywriterApp,
   "brand-models": BrandModelsApp,
 };
 
