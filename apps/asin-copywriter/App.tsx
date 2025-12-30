@@ -398,13 +398,13 @@ export default function AsinCopywriterApp() {
                         <div key={idx} className="relative group">
                           <img
                             src={img}
-                            alt={result.listing.a_plus_alt_texts?.[idx] || `A+ image ${idx + 1}`}
+                            alt={result.listing?.a_plus_alt_texts?.[idx] || `A+ image ${idx + 1}`}
                             className="w-full h-auto rounded border border-gray-200 hover:border-indigo-400 transition-all cursor-pointer"
                             onClick={() => window.open(img, '_blank')}
                           />
-                          {result.listing.a_plus_alt_texts?.[idx] && (
+                          {result.listing?.a_plus_alt_texts?.[idx] && (
                             <div className="mt-1 text-xs text-gray-600 text-center">
-                              {result.listing.a_plus_alt_texts[idx]}
+                              {result.listing?.a_plus_alt_texts[idx]}
                             </div>
                           )}
                           <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all rounded flex items-center justify-center">
