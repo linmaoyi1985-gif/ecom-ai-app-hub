@@ -73,11 +73,40 @@ interface Action {
 }
 
 interface ListingSnapshot {
+  asin?: string;
   title?: string;
   brand?: string;
   price?: string;
   rating?: number;
   review_count?: number;
+  bullets?: string[];
+  description?: string;
+  images?: string[];
+  images_count?: number;
+  has_a_plus?: boolean;
+  a_plus_text?: string;
+  a_plus_blocks?: APlusBlock[];
+  a_plus_images?: string[];
+  a_plus_alt_texts?: string[];
+  manufacturer?: string;
+  model?: string;
+  material?: string;
+  number_of_items?: number;
+  package_quantity?: number;
+  color?: string;
+  style?: string;
+  category_path?: string;
+  bsr?: number;
+  bsr_category?: string;
+}
+
+interface APlusBlock {
+  group_index?: number;
+  module_index?: number;
+  from_manufacturer?: boolean;
+  module_type?: string;
+  images?: string[];
+  image_alt_texts?: string[];
 }
 
 interface ApiResponse {
@@ -224,20 +253,217 @@ export default function AsinCopywriterApp() {
           {result.listing && (
             <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Listing 快照</h3>
-              <div className="space-y-2">
-                {result.listing.title && (
-                  <p className="text-sm"><span className="font-medium">标题:</span> {result.listing.title}</p>
-                )}
-                {result.listing.brand && (
-                  <p className="text-sm"><span className="font-medium">品牌:</span> {result.listing.brand}</p>
-                )}
-                {result.listing.price && (
-                  <p className="text-sm"><span className="font-medium">价格:</span> {result.listing.price}</p>
-                )}
-                {result.listing.rating && (
-                  <p className="text-sm"><span className="font-medium">评分:</span> {result.listing.rating} ({result.listing.review_count} 评论)</p>
-                )}
+
+              {/* Basic Info */}
+              <div className="bg-white rounded-lg p-4 mb-4">
+                <h4 className="font-semibold text-gray-900 mb-3">基础信息</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {result.listing.asin && (
+                    <div className="text-sm">
+                      <span className="font-medium text-gray-700">ASIN:</span>
+                      <span className="ml-2 text-gray-900 font-mono">{result.listing.asin}</span>
+                    </div>
+                  )}
+                  {result.listing.brand && (
+                    <div className="text-sm">
+                      <span className="font-medium text-gray-700">品牌:</span>
+                      <span className="ml-2 text-gray-900">{result.listing.brand}</span>
+                    </div>
+                  )}
+                  {result.listing.manufacturer && (
+                    <div className="text-sm">
+                      <span className="font-medium text-gray-700">制造商:</span>
+                      <span className="ml-2 text-gray-900">{result.listing.manufacturer}</span>
+                    </div>
+                  )}
+                  {result.listing.model && (
+                    <div className="text-sm">
+                      <span className="font-medium text-gray-700">型号:</span>
+                      <span className="ml-2 text-gray-900">{result.listing.model}</span>
+                    </div>
+                  )}
+                  {result.listing.price && (
+                    <div className="text-sm">
+                      <span className="font-medium text-gray-700">价格:</span>
+                      <span className="ml-2 text-gray-900">{result.listing.price}</span>
+                    </div>
+                  )}
+                  {result.listing.rating && (
+                    <div className="text-sm">
+                      <span className="font-medium text-gray-700">评分:</span>
+                      <span className="ml-2 text-gray-900">{result.listing.rating} ⭐ ({result.listing.review_count} 评论)</span>
+                    </div>
+                  )}
+                  {result.listing.color && (
+                    <div className="text-sm">
+                      <span className="font-medium text-gray-700">颜色:</span>
+                      <span className="ml-2 text-gray-900">{result.listing.color}</span>
+                    </div>
+                  )}
+                  {result.listing.style && (
+                    <div className="text-sm">
+                      <span className="font-medium text-gray-700">样式:</span>
+                      <span className="ml-2 text-gray-900">{result.listing.style}</span>
+                    </div>
+                  )}
+                  {result.listing.material && (
+                    <div className="text-sm">
+                      <span className="font-medium text-gray-700">材质:</span>
+                      <span className="ml-2 text-gray-900">{result.listing.material}</span>
+                    </div>
+                  )}
+                  {result.listing.package_quantity !== undefined && (
+                    <div className="text-sm">
+                      <span className="font-medium text-gray-700">包装数量:</span>
+                      <span className="ml-2 text-gray-900">{result.listing.package_quantity}</span>
+                    </div>
+                  )}
+                </div>
               </div>
+
+              {/* Title */}
+              {result.listing.title && (
+                <div className="bg-white rounded-lg p-4 mb-4">
+                  <h4 className="font-semibold text-gray-900 mb-2">产品标题</h4>
+                  <p className="text-sm text-gray-800">{result.listing.title}</p>
+                </div>
+              )}
+
+              {/* Main Images */}
+              {result.listing.images && result.listing.images.length > 0 && (
+                <div className="bg-white rounded-lg p-4 mb-4">
+                  <h4 className="font-semibold text-gray-900 mb-3">主图 ({result.listing.images_count || result.listing.images.length} 张)</h4>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                    {result.listing.images.map((img, idx) => (
+                      <div key={idx} className="relative group">
+                        <img
+                          src={img}
+                          alt={`Product image ${idx + 1}`}
+                          className="w-full h-auto rounded border border-gray-200 hover:border-blue-400 transition-all cursor-pointer"
+                          onClick={() => window.open(img, '_blank')}
+                        />
+                        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all rounded flex items-center justify-center">
+                          <span className="text-white text-xs font-medium opacity-0 group-hover:opacity-100">点击查看大图</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Bullets */}
+              {result.listing.bullets && result.listing.bullets.length > 0 && (
+                <div className="bg-white rounded-lg p-4 mb-4">
+                  <h4 className="font-semibold text-gray-900 mb-3">五点描述 (Bullets)</h4>
+                  <ul className="space-y-2">
+                    {result.listing.bullets.map((bullet, idx) => (
+                      <li key={idx} className="text-sm text-gray-800 flex">
+                        <span className="font-bold text-blue-600 mr-2">•</span>
+                        <span>{bullet}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Description */}
+              {result.listing.description && (
+                <div className="bg-white rounded-lg p-4 mb-4">
+                  <h4 className="font-semibold text-gray-900 mb-2">产品描述</h4>
+                  <p className="text-sm text-gray-800 whitespace-pre-line">{result.listing.description}</p>
+                </div>
+              )}
+
+              {/* A+ Content */}
+              {result.listing.has_a_plus && (
+                <div className="bg-white rounded-lg p-4 mb-4">
+                  <h4 className="font-semibold text-gray-900 mb-3">
+                    A+ 内容
+                    {result.listing.a_plus_images && (
+                      <span className="ml-2 text-sm font-normal text-gray-600">
+                        ({result.listing.a_plus_images.length} 张图片)
+                      </span>
+                    )}
+                  </h4>
+
+                  {result.listing.a_plus_text && (
+                    <div className="mb-3 text-xs text-gray-600 bg-gray-50 p-2 rounded">
+                      {result.listing.a_plus_text}
+                    </div>
+                  )}
+
+                  {result.listing.a_plus_images && result.listing.a_plus_images.length > 0 && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {result.listing.a_plus_images.map((img, idx) => (
+                        <div key={idx} className="relative group">
+                          <img
+                            src={img}
+                            alt={result.listing.a_plus_alt_texts?.[idx] || `A+ image ${idx + 1}`}
+                            className="w-full h-auto rounded border border-gray-200 hover:border-indigo-400 transition-all cursor-pointer"
+                            onClick={() => window.open(img, '_blank')}
+                          />
+                          {result.listing.a_plus_alt_texts?.[idx] && (
+                            <div className="mt-1 text-xs text-gray-600 text-center">
+                              {result.listing.a_plus_alt_texts[idx]}
+                            </div>
+                          )}
+                          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all rounded flex items-center justify-center">
+                            <span className="text-white text-xs font-medium opacity-0 group-hover:opacity-100">点击查看大图</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {result.listing.a_plus_blocks && result.listing.a_plus_blocks.length > 0 && (
+                    <details className="mt-3">
+                      <summary className="cursor-pointer text-sm text-blue-600 hover:text-blue-700">
+                        查看 A+ 内容模块详情 ({result.listing.a_plus_blocks.length} 个模块)
+                      </summary>
+                      <div className="mt-2 space-y-2">
+                        {result.listing.a_plus_blocks.map((block, idx) => (
+                          <div key={idx} className="border-l-4 border-indigo-400 pl-3 py-2 bg-gray-50 rounded">
+                            <div className="text-xs text-gray-600 mb-1">
+                              <span className="font-medium">模块 {block.module_index}</span>
+                              {block.module_type && ` - ${block.module_type}`}
+                              {block.from_manufacturer && <span className="ml-2 text-indigo-600">(厂商提供)</span>}
+                            </div>
+                            {block.images && block.images.length > 0 && (
+                              <div className="text-xs text-gray-700">
+                                图片数量: {block.images.length}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </details>
+                  )}
+                </div>
+              )}
+
+              {/* Category and BSR */}
+              {(result.listing.category_path || result.listing.bsr) && (
+                <div className="bg-white rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-900 mb-3">类目与排名</h4>
+                  <div className="space-y-2">
+                    {result.listing.category_path && (
+                      <div className="text-sm">
+                        <span className="font-medium text-gray-700">类目路径:</span>
+                        <p className="ml-2 text-gray-800 text-xs mt-1 break-words">{result.listing.category_path}</p>
+                      </div>
+                    )}
+                    {result.listing.bsr && (
+                      <div className="text-sm">
+                        <span className="font-medium text-gray-700">BSR 排名:</span>
+                        <span className="ml-2 text-gray-900 font-semibold">#{result.listing.bsr}</span>
+                        {result.listing.bsr_category && (
+                          <span className="ml-2 text-gray-600">in {result.listing.bsr_category}</span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
