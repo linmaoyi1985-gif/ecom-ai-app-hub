@@ -175,7 +175,11 @@ export default function AsinCopywriterApp() {
       }
 
       const data = await response.json();
-      setResult(data);
+      // 👇👇👇 修改开始 👇👇👇
+      // 兼容 N8N 返回数组的情况，取第一个元素
+      const finalResult = Array.isArray(data) ? data[0] : data;
+      setResult(finalResult);
+      // 👆👆👆 修改结束 👆👆👆
     } catch (err) {
       setError((err as Error).message || "发生错误");
     } finally {
