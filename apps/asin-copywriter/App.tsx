@@ -175,11 +175,29 @@ export default function AsinCopywriterApp() {
       }
 
       const data = await response.json();
-      // 👇👇👇 修改开始 👇👇👇
-      // 兼容 N8N 返回数组的情况，取第一个元素
-      const finalResult = Array.isArray(data) ? data[0] : data;
+
+      // 更深层次的数据提取，兼容 N8N 的多种返回格式
+      let finalResult: ApiResponse;
+
+      if (Array.isArray(data)) {
+        // 如果是数组，取第一个元素
+        const firstItem = data[0];
+
+        // 检查是否有 json 字段（N8N 常见的包装格式）
+        if (firstItem && typeof firstItem === 'object' && 'json' in firstItem) {
+          finalResult = firstItem.json as ApiResponse;
+        } else {
+          finalResult = firstItem as ApiResponse;
+        }
+      } else if (data && typeof data === 'object' && 'json' in data) {
+        // 如果直接返回对象且有 json 字段
+        finalResult = data.json as ApiResponse;
+      } else {
+        // 直接使用返回的数据
+        finalResult = data as ApiResponse;
+      }
+
       setResult(finalResult);
-      // 👆👆👆 修改结束 👆👆👆
     } catch (err) {
       setError((err as Error).message || "发生错误");
     } finally {
